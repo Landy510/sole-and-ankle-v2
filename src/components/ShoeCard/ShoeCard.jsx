@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import { COLORS, WEIGHTS } from '../../constants';
 import { formatPrice, pluralize, isNewShoe } from '../../utils';
 import Spacer from '../Spacer';
-import Flag from '../Flag';
 
 const ShoeCard = ({
   slug,
@@ -37,12 +36,18 @@ const ShoeCard = ({
       <Wrapper>
         <ImageWrapper>
           <Image alt="" src={imageSrc} />
-          {variant !== "default" && <Flag variant={variant} />}
+          {variant === "on-sale" && <SaleFlag>Sale</SaleFlag>}
+          {variant === "new-release" && <NewFlag>Just Release!</NewFlag>}
         </ImageWrapper>
         <Spacer size={12} />
         <Row>
           <Name>{name}</Name>
-          <Price textDecoration={variant === "on-sale" ? "line-through" : "none"}>{formatPrice(price)}</Price>
+          <Price 
+            style={{
+              "--color": variant === "on-sale" ? COLORS.gray[700] : undefined,
+              "--textDecoration": variant === "on-sale" ? "line-through" : undefined
+            }}
+          >{formatPrice(price)}</Price>
         </Row>
         <Row>
           <ColorInfo>{pluralize('Color', numOfColors)}</ColorInfo>
@@ -82,7 +87,8 @@ const Name = styled.h3`
 `;
 
 const Price = styled.span`
-  text-decoration: ${props => props.textDecoration};
+  color: var(--color);
+  text-decoration: var(--textDecoration);
 `;
 
 const ColorInfo = styled.p`
@@ -93,5 +99,24 @@ const SalePrice = styled.span`
   font-weight: ${WEIGHTS.medium};
   color: ${COLORS.primary};
 `;
+
+const Flag = styled.span`
+  padding: 8px 12px;
+  color: ${COLORS.white};
+  background: red;
+  border-radius: 2px;
+  font-weight: ${WEIGHTS.semiBold};
+  position: absolute;
+  top: 12px;
+  right: -8px;
+`;
+
+const SaleFlag = styled(Flag)`
+  background: ${COLORS.primary};
+`;
+
+const NewFlag = styled(Flag)`
+  background: ${COLORS.secondary};
+`
 
 export default ShoeCard;
